@@ -1,6 +1,9 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.entity.Text;
+import com.example.demo.domain.entity.VocabularyWord;
 import com.example.demo.service.TextService;
+import com.example.demo.service.VocabularyWordTextService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -18,15 +21,21 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @RequestMapping("text")
 public class TextController {
 
-    public static Set<String> VOCABULARY = new TreeSet<>();
-
     @Autowired
     private TextService textService;
 
+    @Autowired
+    private VocabularyWordTextService vocabularyWordTextService;
+
     @PostMapping
-    public Set<String> addTest(@RequestParam MultipartFile file) throws IOException {
+    public List<VocabularyWord> addText(@RequestParam MultipartFile file) throws IOException {
         String content = new String(file.getBytes(), UTF_8);
-        VOCABULARY = textService.getVocabularyFromText(content);
-        return VOCABULARY;
+        Text text = textService.saveText(file.getOriginalFilename());
+        List<VocabularyWord> vocabularyFromText = textService.getVocabularyFromText(content);
+        vocabularyWordTextService.saveWordsFromText(
+          vocabularyFromText.stream()
+          .map(VocabularyWord::getWord)
+          .collect(Collectors.toList()), text.getId());
+        return vocabularyFromText;
     }
 }

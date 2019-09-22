@@ -32,7 +32,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-jdbc')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-web-services')
-    compileOnly('org.projectlombok:lombok')
+    compile('org.projectlombok:lombok')
     developmentOnly('org.springframework.boot:spring-boot-devtools')
     runtimeOnly('com.h2database:h2')
     annotationProcessor('org.springframework.boot:spring-boot-configuration-processor')

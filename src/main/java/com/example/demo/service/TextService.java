@@ -1,8 +1,13 @@
 package com.example.demo.service;
 
-import java.util.Set;
+import com.example.demo.domain.entity.Text;
+import com.example.demo.domain.entity.VocabularyWord;
+
+import java.util.List;
 
 public interface TextService {
 
-    Set<String> getVocabularyFromText(String text);
+    List<VocabularyWord> getVocabularyFromText(String text);
+
+    Text saveText(String fileName);
 }
