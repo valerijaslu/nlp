@@ -5,6 +5,9 @@ import com.example.demo.domain.entity.VocabularyWord;
 import com.example.demo.service.TextService;
 import com.example.demo.service.VocabularyWordTextService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,10 +30,16 @@ public class TextController {
     @Autowired
     private VocabularyWordTextService vocabularyWordTextService;
 
+    @GetMapping
+    public Page<Text> text(Pageable pageable) {
+        Page<Text> texts = textService.getTexts(pageable);
+        return texts;
+    }
+
     @PostMapping
     public List<VocabularyWord> addText(@RequestParam MultipartFile file) throws IOException {
         String content = new String(file.getBytes(), UTF_8);
-        Text text = textService.saveText(file.getOriginalFilename());
+        Text text = textService.saveText(file.getOriginalFilename(), content);
         List<VocabularyWord> vocabularyFromText = textService.getVocabularyFromText(content);
         vocabularyWordTextService.saveWordsFromText(
           vocabularyFromText.stream()

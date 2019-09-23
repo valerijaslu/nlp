@@ -5,6 +5,8 @@ import com.example.demo.domain.entity.VocabularyWord;
 import com.example.demo.repository.TextRepository;
 import com.example.demo.repository.VocabularyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -22,7 +24,12 @@ public class TextServiceImpl implements TextService {
     @Autowired
     private TextRepository textRepository;
 
-    @Override
+  @Override
+  public Page<Text> getTexts(Pageable pageable) {
+    return textRepository.findAll(pageable);
+  }
+
+  @Override
     public List<VocabularyWord> getVocabularyFromText(String text) {
         String[] words = extractWordsFromText(text);
         Map<String, Long> vocabulary = Arrays.stream(words)
@@ -50,8 +57,10 @@ public class TextServiceImpl implements TextService {
     }
 
   @Override
-  public Text saveText(String fileName) {
-    return textRepository.save(Text.builder().name(fileName).build());
+  public Text saveText(String fileName, String content) {
+    return textRepository.save(Text.builder()
+      .name(fileName)
+      .data(content).build());
   }
 
   private String[] extractWordsFromText(String text) {
