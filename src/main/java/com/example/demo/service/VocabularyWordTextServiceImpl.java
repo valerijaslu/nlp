@@ -24,4 +24,9 @@ public class VocabularyWordTextServiceImpl implements VocabularyWordTextService 
     return vocabularyWordTextRepository.saveAll(vocabularyWordTextList);
   }
 
+  @Override
+  public List<Long> findTextIdsByWord(String word) {
+    return vocabularyWordTextRepository.findByWord(word).stream().map(VocabularyWordText::getTextId).collect(Collectors.toList());
+  }
+
 }

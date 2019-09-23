@@ -7,4 +7,6 @@ import org.springframework.data.domain.Pageable;
 public interface VocabularyService {
 
   Page<VocabularyWord> getVocabularyWords(Pageable page);
+
+  Page<VocabularyWord> findWordsBySearchFragment(String word, Pageable page);
 }

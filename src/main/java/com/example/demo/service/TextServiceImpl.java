@@ -63,6 +63,13 @@ public class TextServiceImpl implements TextService {
       .data(content).build());
   }
 
+  @Override
+  public List<Text> getTextsByIdList(List<Long> textIdList, boolean withoutContent) {
+    List<Text> result = textRepository.findAllById(textIdList);
+    result.forEach(text -> text.setData(null));
+    return result;
+  }
+
   private String[] extractWordsFromText(String text) {
         return text
           .replaceAll("([1-9]|[12][0-9]|3[01])st|nd|th ", "") // dates

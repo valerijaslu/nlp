@@ -8,4 +8,6 @@ public interface VocabularyWordTextService {
 
   List<VocabularyWordText> saveWordsFromText(List<String> words, Long textId);
 
+  List<Long> findTextIdsByWord(String word);
+
 }

@@ -14,4 +14,6 @@ public interface TextService {
     List<VocabularyWord> getVocabularyFromText(String text);
 
     Text saveText(String fileName, String content);
+
+    List<Text> getTextsByIdList(List<Long> textIdList, boolean withoutContent);
 }

@@ -17,4 +17,9 @@ public class VocabularyServiceImpl implements VocabularyService {
   public Page<VocabularyWord> getVocabularyWords(Pageable page) {
     return vocabularyRepository.findAll(page);
   }
+
+  @Override
+  public Page<VocabularyWord> findWordsBySearchFragment(String word, Pageable page) {
+    return vocabularyRepository.findByWordLike(word, page);
+  }
 }
