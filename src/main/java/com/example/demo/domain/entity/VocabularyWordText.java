@@ -17,7 +17,7 @@ import javax.persistence.Id;
 @Entity(name = "vocabulary_text")
 public class VocabularyWordText {
   @Id
-  @GeneratedValue(strategy= GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private Long textId;
   private String word;

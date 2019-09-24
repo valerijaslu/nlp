@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Set;
 
-public interface VocabularyRepository extends JpaRepository<VocabularyWord, String> {
+public interface VocabularyRepository extends JpaRepository<VocabularyWord, String>, VocabularyRepositoryCustom {
 
   List<VocabularyWord> findAllByWordIn(Set<String> words);
 

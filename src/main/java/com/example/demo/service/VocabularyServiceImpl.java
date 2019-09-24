@@ -20,6 +20,6 @@ public class VocabularyServiceImpl implements VocabularyService {
 
   @Override
   public Page<VocabularyWord> findWordsBySearchFragment(String word, Pageable page) {
-    return vocabularyRepository.findByWordLike(word, page);
+    return vocabularyRepository.findByWordLike("%" + word + "%", page);
   }
 }

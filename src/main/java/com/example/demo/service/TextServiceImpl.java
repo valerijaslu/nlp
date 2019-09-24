@@ -36,7 +36,7 @@ public class TextServiceImpl implements TextService {
           .map(String::toLowerCase)
           .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-        Map<String, VocabularyWord> wordsToUpdate = vocabularyRepository.findAllByWordIn(vocabulary.keySet()).stream()
+          Map<String, VocabularyWord> wordsToUpdate = vocabularyRepository.findByWords(vocabulary.keySet()).stream()
           .collect(Collectors.toMap(VocabularyWord::getWord, vocabularyWord -> vocabularyWord));
 
       List<VocabularyWord> wordsToSave = vocabulary.entrySet().stream()
