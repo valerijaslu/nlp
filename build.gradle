@@ -37,6 +37,8 @@ dependencies {
     compile files('libs/ojdbc8.jar')
     // Handlebars 
     compile('com.github.jknack:handlebars:4.1.2')
+    // https://mvnrepository.com/artifact/org.apache.opennlp/opennlp-tools
+    compile group: 'org.apache.opennlp', name: 'opennlp-tools', version: '1.9.1'
     developmentOnly('org.springframework.boot:spring-boot-devtools')
     runtimeOnly('com.h2database:h2')
     annotationProcessor('org.springframework.boot:spring-boot-configuration-processor')

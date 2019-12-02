@@ -19,6 +19,8 @@ public class VocabularyWord {
   @Id
   private String word;
   private Long frequency;
+  private String tag;
+
   @Transient
   List<Text> mentions;
 }

@@ -26,13 +26,14 @@ public class VocabularyRepositoryCustomImpl implements VocabularyRepositoryCusto
   @Override
   public List<VocabularyWord> findByWords(Collection<String> words) {
     String sql = "select\n" +
-      "       word, frequency\n" +
+      "       word, frequency, tag\n" +
       "       from vocabulary\n" +
       "       where " + toOracleInWithoutLimitations(new ArrayList<>(words), "word") + "\n";
     RowMapper<VocabularyWord> vocabularyWordRowMapper = (ResultSet rs, int rowNum) ->
       VocabularyWord.builder()
         .word(rs.getString("word"))
         .frequency(rs.getLong("frequency"))
+        .tag(rs.getString("tag"))
         .build();
     return jdbcTemplate.query(sql, vocabularyWordRowMapper);
   }

@@ -13,4 +13,7 @@ public interface VocabularyRepository extends JpaRepository<VocabularyWord, Stri
   List<VocabularyWord> findAllByWordIn(Set<String> words);
 
   Page<VocabularyWord> findByWordLike(String word, Pageable page);
+
+  Page<VocabularyWord> findAllByWordIn(List<String> words, Pageable pageable);
+
 }
