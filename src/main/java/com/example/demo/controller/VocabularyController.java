@@ -51,11 +51,11 @@ public class VocabularyController {
     return vocabularyWords;
   }
 
-  @GetMapping("{textId}")
+  @GetMapping("find/{textId}")
   public Page<VocabularyWord> getVocabularyFromText(@PathVariable Long textId, Pageable page) {
     Text text = textService.getTextById(textId);
     List<String> words = vocabularyWordTextService.getWordsFromText(textId);
-    Page<VocabularyWord> vocabularyWords = vocabularyRepository.findAllByWordIn(words, page);
+    Page<VocabularyWord> vocabularyWords = vocabularyRepository.findByWords(words, page);
     vocabularyWords.forEach(vocabularyWord -> vocabularyWord.setMentions(Collections.singletonList(text)));
     return vocabularyWords;
   }
