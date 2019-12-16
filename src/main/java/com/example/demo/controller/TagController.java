@@ -23,7 +23,7 @@ public class TagController {
 
   @PutMapping
   public void editTag(@RequestBody EditTagRequest editTagRequest) {
-    tagService.editTag(editTagRequest.getWord(), editTagRequest.getWord());
+    tagService.editTag(editTagRequest.getWord(), editTagRequest.getEditTag());
   }
 
 }

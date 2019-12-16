@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,5 +61,15 @@ public class TextController {
     public Text editText(@RequestParam MultipartFile file, @PathVariable Long textId) throws IOException {
         String content = new String(file.getBytes(), UTF_8);
         return textService.editText(textId, content);
+    }
+
+    @PostMapping("search")
+    public Page<Text> searchTexts(@RequestBody String searchValue) {
+        List<String> searchWords = Arrays.asList(searchValue
+          .replaceAll("[.,':;?!\r\n]", " ")
+          .trim()
+          .toLowerCase()
+          .split(" "));
+        return textService.searchText(searchWords);
     }
 }

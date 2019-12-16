@@ -11,6 +11,8 @@ public interface TextService {
 
     Page<Text> getTexts(Pageable pageable);
 
+    Page<Text> searchText(List<String> searchWords);
+
     Text getTextById(Long id);
 
     Text saveText(Long id, String fileName, String content);

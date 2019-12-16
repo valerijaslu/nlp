@@ -2,19 +2,25 @@ package com.example.demo.service.impl;
 
 import com.example.demo.domain.entity.Text;
 import com.example.demo.domain.entity.VocabularyWord;
+import com.example.demo.domain.entity.WordCanonical;
 import com.example.demo.repository.TextRepository;
 import com.example.demo.repository.VocabularyRepository;
+import com.example.demo.repository.WordCanonicalRepository;
 import com.example.demo.service.api.TagService;
 import com.example.demo.service.api.TextService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,9 +36,23 @@ public class TextServiceImpl implements TextService {
   @Autowired
   private TagService tagService;
 
+  @Autowired
+  private WordCanonicalRepository wordCanonicalRepository;
+
   @Override
   public Page<Text> getTexts(Pageable pageable) {
     return textRepository.findAll(pageable);
+  }
+
+  @Override
+  public Page<Text> searchText(List<String> searchWords) {
+    searchWords = searchWords.stream().filter(word -> !StringUtils.isEmpty(word)).collect(Collectors.toList());
+    Set<WordCanonical> wordCanonicalList = wordCanonicalRepository.findByWordInOrCanonicalIn(searchWords, searchWords);
+    Map<Long, List<WordCanonical>> textWordsMap = wordCanonicalList.stream()
+      .collect(Collectors.groupingBy(WordCanonical::getTextId));
+    List<Text> texts = textRepository.findAllById(textWordsMap.keySet());
+    texts.sort(getSearchTextComparator(searchWords, textWordsMap));
+    return new PageImpl<>(texts);
   }
 
   @Override
@@ -115,4 +135,33 @@ public class TextServiceImpl implements TextService {
       .split("[.,;:!?)(\r\n\\s]+");
   }
 
+
+  private Comparator<Text> getSearchTextComparator(List<String> searchWords, Map<Long, List<WordCanonical>> textWordsMap) {
+    return (o1, o2) -> {
+
+      List<WordCanonical> o1e = textWordsMap.get(o1.getId());
+      List<String> o1Words = o1e.stream().map(WordCanonical::getWord).collect(Collectors.toList());
+      List<String> o1Canonical = o1e.stream().map(WordCanonical::getCanonical).collect(Collectors.toList());
+      final int[] o1Count = {0};
+      searchWords.forEach(word -> {
+        if (o1Words.contains(word) || o1Canonical.contains(word)) {
+          o1Count[0]++;
+        }
+      });
+
+      List<WordCanonical> o2e = textWordsMap.get(o2.getId());
+      List<String> o2Words = o2e.stream().map(WordCanonical::getWord).collect(Collectors.toList());
+      List<String> o2Canonical = o2e.stream().map(WordCanonical::getCanonical).collect(Collectors.toList());
+      final int[] o2Count = {0};
+      searchWords.forEach(word -> {
+        if (o2Words.contains(word) || o2Canonical.contains(word)) {
+          o2Count[0]++;
+        }
+      });
+
+      return  o2Count[0] != o1Count[0]
+        ? o2Count[0] - o1Count[0]
+        : (o2Words.size() + o2Canonical.size() - o1Words.size() - o1Canonical.size());
+    };
+  }
 }
