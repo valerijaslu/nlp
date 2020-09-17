@@ -11,7 +11,7 @@ import javax.persistence.Transient;
 import java.util.List;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "vocabulary")

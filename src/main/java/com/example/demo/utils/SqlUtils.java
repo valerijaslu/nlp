@@ -37,7 +37,7 @@ public class SqlUtils {
                 + ")";
     }
 
-    private static String quote(String str) {
+    public static String quote(String str) {
         return "'" + escape(str) + "'";
     }
 

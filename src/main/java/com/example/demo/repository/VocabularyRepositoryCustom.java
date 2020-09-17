@@ -12,4 +12,6 @@ public interface VocabularyRepositoryCustom {
 
   Page<VocabularyWord> findByWords(Collection<String> words, Pageable pageable);
 
+  List<VocabularyWord> findByWordInAndTagInLike(List<String> words, List<String> tags);
+
 }

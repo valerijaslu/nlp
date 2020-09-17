@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.example.demo.utils.SqlUtils.quote;
 import static com.example.demo.utils.SqlUtils.toOracleInWithoutLimitations;
 
 @Service
@@ -26,6 +27,13 @@ public class VocabularyRepositoryCustomImpl implements VocabularyRepositoryCusto
     VocabularyWord.builder()
       .word(rs.getString("word"))
       .frequency(rs.getLong("frequency"))
+      .tag(rs.getString("tag"))
+      .build();
+
+  private static final RowMapper<VocabularyWord> wordRowMapper = (ResultSet rs, int rowNum) ->
+    VocabularyWord.builder()
+      .word(rs.getString("word"))
+      .frequency(null)
       .tag(rs.getString("tag"))
       .build();
 
@@ -57,6 +65,24 @@ public class VocabularyRepositoryCustomImpl implements VocabularyRepositoryCusto
       String.format("order by %s %s\n", sortField, sortOrder) +
       String.format("offset %d rows fetch next %d rows only \n", offset, pageSize);
     return new PageImpl<>(jdbcTemplate.query(sql, vocabularyWordRowMapper), pageable, countWords(words));
+  }
+
+  @Override
+  public List<VocabularyWord> findByWordInAndTagInLike(List<String> words, List<String> tags) {
+
+    StringBuilder andClause = new StringBuilder();
+    for (int i = 0; i < tags.size(); i++) {
+      andClause.append(" tag not like ").append(quote(tags.get(i))).append(" and ");
+      if (i == tags.size() - 1) {
+        andClause.append(" tag not like ").append(quote(tags.get(i)));
+      }
+    }
+
+    String sql = "select\n" +
+      "       word, tag\n" +
+      "       from vocabulary\n" +
+      "       where " + toOracleInWithoutLimitations(words, "word") + " and (" + andClause + ")\n";
+    return jdbcTemplate.query(sql, wordRowMapper);
   }
 
   private long countWords(Collection<String> words) {

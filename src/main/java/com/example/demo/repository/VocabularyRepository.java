@@ -9,4 +9,5 @@ public interface VocabularyRepository extends JpaRepository<VocabularyWord, Stri
 
   Page<VocabularyWord> findByWordLike(String word, Pageable page);
 
+
 }
